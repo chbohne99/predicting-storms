@@ -1,5 +1,6 @@
 import math
 import pandas as pd
+import numpy as np
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -21,11 +22,21 @@ def preprocessing(data):
     # Drop the columns that doens't have values in DAMAGE_PROPERTY & 'DAMAGE_CROPS'
     data = data.dropna(subset=['DAMAGE_PROPERTY', 'DAMAGE_CROPS'], how='all')
     # Transform values object/str to float
+
+
+
     data['DAMAGE_CROPS'] = data.DAMAGE_CROPS.map(transform_money)
+
+    # replace nan values with 0 using numpy
+    data.DAMAGE_CROPS.replace(np.nan, 0, inplace=True)
+    data.DAMAGE_PROPERTY.replace(np.nan, 0, inplace=True)
+
 
     #Sum up the Damage Crops and Damage Property into one new column
 
     data['TOTAL_DAMAGE'] = data['DAMAGE_CROPS'] + data['DAMAGE_PROPERTY']
+    data.dropna(subset=['TOTAL_DAMAGE'], inplace=True, axis=0)  # Drop rows with missing values in 'TOTAL_DAMAGE' column
+
 
     #Convert the Year Month into datetime
     data['EVENT_YM_B'] = pd.to_datetime(data['EVENT_YM_B'])

@@ -4,3 +4,5 @@ notebooks/
 __pycache__/
 baseline_avg_mse.py
 .python-version
+test.py
+test.ipynb
