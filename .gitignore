@@ -2,3 +2,4 @@ raw_data/
 notebooks/
 .vscode/
 __pycache__/
+.python-version
