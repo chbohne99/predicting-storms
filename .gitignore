@@ -2,5 +2,5 @@ raw_data/
 notebooks/
 .vscode/
 __pycache__/
-
+baseline_avg_mse.py
 .python-version

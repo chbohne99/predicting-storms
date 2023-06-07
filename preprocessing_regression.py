@@ -23,9 +23,15 @@ def preprocessing(data):
     # Transform values object/str to float
     data['DAMAGE_CROPS'] = data.DAMAGE_CROPS.map(transform_money)
 
-     #Sum up the Damage Crops and Damage Property into one new column
+    #Sum up the Damage Crops and Damage Property into one new column
 
     data['TOTAL_DAMAGE'] = data['DAMAGE_CROPS'] + data['DAMAGE_PROPERTY']
+
+    #Convert the Year Month into datetime
+    data['EVENT_YM_B'] = pd.to_datetime(data['EVENT_YM_B'])
+
+    # Create a new column Month
+    data['MONTH'] = data.EVENT_YM_B.map(month)
 
     # Transform Month values to sin and cos values
     data['COS_MONTH'] = data.MONTH.map(to_cos)
@@ -100,3 +106,8 @@ def transform_money(row):
   elif 'B' in str(row):
     row = float(row.strip('B'))*1_000_000_000
   return float(row)
+
+
+def month(line):
+    line = line.month
+    return line
