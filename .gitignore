@@ -1,1 +1,4 @@
 raw_data/
+notebooks/
+.vscode/
+__pycache__/
