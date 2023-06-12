@@ -3,7 +3,6 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 import seaborn as snsb
 import numpy as np
-import seaborn as sns
 from math import radians, cos, sin, asin, sqrt
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import OneHotEncoder
@@ -30,7 +29,7 @@ def preprocessing(df):
     tornados['DIFF'] = tornados['DIFF'].map(total_seconds)
 
     # replace the 0 duration with the mean duration
-    tornados.DIFF.replace(0, np.mean(tornados.DIFF), inplace=True)
+    tornados.DIFF.replace(0, np.nanmean(tornados.DIFF), inplace=True)
 
     data_torn = tornados[['STATE', 'BEGIN_DATE_TIME','END_DATE_TIME','TOR_F_SCALE',
                       'TOR_LENGTH', 'TOR_WIDTH','BEGIN_LAT', 'BEGIN_LON',
@@ -46,7 +45,7 @@ def preprocessing(df):
     def haversine(lon1, lat1, lon2, lat2):
         """
         Calculate the great circle distance in kilometers between two points
-        on the earth (specified in decimal degrees)
+        on the earth (specified in decimal degrees)s
         """
         # convert decimal degrees to radians
         lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
@@ -95,8 +94,8 @@ def preprocessing(df):
 
     print('Created all the variables needed!')
 
-    data_torn.replace(['F0', 'F1', 'F2', 'F3', 'F4'], ['EF0', 'EF1', 'EF2',
-                                                       'EF3', 'EF4'], inplace=True)
+    data_torn.replace(['F0', 'F1', 'F2', 'F3', 'F4', 'F5'], ['EF0', 'EF1', 'EF2',
+                                                       'EF3', 'EF4', 'EF5'], inplace=True)
 
 
 
