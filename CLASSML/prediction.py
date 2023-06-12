@@ -1,7 +1,7 @@
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 
-def evaluate(df):
+def prediction(df):
     '''
     Evaluate the model and compare it to baseline score
     '''
@@ -14,3 +14,5 @@ def evaluate(df):
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3,
                                                         random_state=42)
+    y_pred = []
+    return y_pred
