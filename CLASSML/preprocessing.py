@@ -1,9 +1,5 @@
 import pandas as pd
-import plotly.express as px
-import matplotlib.pyplot as plt
-import seaborn as snsb
 import numpy as np
-from math import radians, cos, sin, asin, sqrt
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import MinMaxScaler
@@ -37,42 +33,13 @@ def preprocessing(df):
                       'END_LAT', 'END_LON', 'DIFF']]
 
     data_torn.drop(index = data_torn[data_torn.STATE.isin(['VIRGIN ISLANDS', 'ALASKA', 'DISTRICT OF COLUMBIA',
-                    'RHODE ISLAND','Kentucky' 'HAWAII', 'VERMONT', 'DELAWARE', 'NEW HAMPSHIRE', 'OREGON',
+                    'RHODE ISLAND','Kentucky','HAWAII', 'VERMONT', 'DELAWARE', 'NEW HAMPSHIRE', 'OREGON',
                     'CONNECTICUT', 'WASHINGTON', 'UTAH', 'MAINE','WEST VIRGINIA', 'NEW JERSEY', 'MASSACHUSETTS'
                     'PUERTO RICO', 'NEVADA'])].index, inplace=True)
-
-    # azimuth direction -> angle relativeley to geographical North
-    data_torn['DIR'] = np.arctan((data_torn.END_LON - data_torn.BEGIN_LON)/
-                                 (data_torn.END_LAT - data_torn.BEGIN_LAT))
-    # fill missing values with the mean traveling direction of the tornado
-    data_torn.DIR.fillna(np.nanmean(data_torn.DIR), inplace=True)
     data_torn.reset_index(inplace=True)
     data_torn.drop(columns = 'index', inplace=True)
 
-    def haversine(lon1, lat1, lon2, lat2):
-        """
-        Calculate the great circle distance in kilometers between two points
-        on the earth (specified in decimal degrees)s
-        """
-        # convert decimal degrees to radians
-        lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
-
-        # haversine formula
-        dlon = lon2 - lon1
-        dlat = lat2 - lat1
-        a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
-        c = 2 * asin(sqrt(a))
-        r = 6371 # Radius of earth in kilometers. Use 3956 for miles. Determines return value units.
-        return c * r
-    harv_dist = []
-    for i in range(len(data_torn)):
-        harv_dist.append(haversine(data_torn.BEGIN_LON[i], data_torn.BEGIN_LAT[i],
-                                   data_torn.END_LON[i],data_torn.END_LAT[i]))
-
-    data_torn['HARV_DIST'] = harv_dist
-
     data_torn.dropna(subset=['TOR_LENGTH'], inplace=True)
-    data_torn.HARV_DIST.fillna(np.nanmean(data_torn.HARV_DIST), inplace=True)
 
     def extract_m(row):
         row = row.month
@@ -98,16 +65,16 @@ def preprocessing(df):
     data_torn.drop(columns = 'index', inplace=True)
 
     data_torn['Month_sin']=data_torn.MONTH.apply(lambda x:
-        np.sin(2*np.pi*data_torn.MONTH[x]/12))
+        np.sin(2*np.pi*x/12))
     data_torn['Month_cosin']=data_torn.MONTH.apply(lambda x:
-        np.cos(2*np.pi*data_torn.MONTH[x]/12))
+        np.cos(2*np.pi*x/12))
     data_torn.drop(columns = 'MONTH', inplace=True)
 
     data_torn['Day_sin']=data_torn.DAY.apply(lambda x:
-        np.sin(2*np.pi*data_torn.DAY[x]/365))
+        np.sin(2*np.pi*x/365))
     data_torn['Day_cosin']=data_torn.DAY.apply(lambda x:
-        np.cos(2*np.pi*data_torn.DAY[x]/365))
-    data_torn.drop(columns = 'DAY')
+        np.cos(2*np.pi*x/365))
+    data_torn.drop(columns = 'DAY', inplace=True)
 
     data_torn['AREA'] = data_torn.TOR_WIDTH * data_torn.TOR_LENGTH
 
@@ -142,11 +109,7 @@ def preprocessing(df):
     ohe = OneHotEncoder(sparse = False)
 
     # Fit encoder
-    ohe.fit(data_torn[['STATE']])
-    # Transform the current "Street" column
-    data_torn[ohe.get_feature_names_out()] = ohe.transform(data_torn[['STATE']])
-
-    # Drop the column "Street" which has been encoded
+    data_torn = pd.concat([data_torn,pd.get_dummies(data_torn['STATE'])], axis = 1)
     data_torn.drop(columns = ["STATE"], inplace = True)
 
     print('Encoded the states!')
@@ -160,14 +123,14 @@ def preprocessing(df):
     # Step 1- Fit the scaler to the `GrLiveArea`
     # to "learn" the median value and the IQR
 
-    mm_scaler.fit(data_torn[['TOR_LENGTH','TOR_WIDTH','DIFF','AREA', 'DIR', 'HARV_DIST']])
+    mm_scaler.fit(data_torn[['TOR_LENGTH','TOR_WIDTH','DIFF','AREA']])
 
     # 2-Scale/Transform
     # <-> apply the transformation (value - median) / IQR for every house
 
-    data_torn[['TOR_LENGTH','TOR_WIDTH','DIFF','AREA', 'DIR', 'HARV_DIST']]\
+    data_torn[['TOR_LENGTH','TOR_WIDTH','DIFF','AREA']]\
                            = mm_scaler.transform(data_torn[['TOR_LENGTH',
-                            'TOR_WIDTH','DIFF','AREA', 'DIR', 'HARV_DIST']])
+                            'TOR_WIDTH','DIFF','AREA']])
 
     data_torn.dropna(inplace=True)
 
