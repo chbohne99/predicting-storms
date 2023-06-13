@@ -73,7 +73,6 @@ def cleaning(df):
     # fill missing values with the mean traveling direction of the tornado
     data_torn.DIR.fillna(np.nanmean(data_torn.DIR), inplace=True)
     data_torn.reset_index(inplace=True)
-    data_torn.drop(columns = 'index', inplace=True)
 
     def haversine(lon1, lat1, lon2, lat2):
         """
