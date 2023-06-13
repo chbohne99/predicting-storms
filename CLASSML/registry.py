@@ -14,7 +14,7 @@ import pickle
 
 def load_model_scale():
     client = storage.Client()
-    blobs = list(client.get_bucket(BUCKET_NAME).list_blobs(prefix="classifier"))
+    blobs = list(client.get_bucket(BUCKET_NAME).list_blobs(prefix="classification"))
 
     model_path_to_save = os.path.join(LOCAL_REGISTRY_PATH, blobs[0].name)
     blobs[0].download_to_filename(model_path_to_save)
