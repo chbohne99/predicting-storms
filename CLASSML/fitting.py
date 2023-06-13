@@ -69,4 +69,7 @@ def fitting(df):
                            = mm_scaler.transform(data_torn[['tornado_length',
                                                             'tornado_width',
                                                             'duration','AREA']])
+    data_torn.rename(columns = {'tornado_length':'TOR_LENGTH', 'tornado_width':'TOR_WIDTH',
+                         'duration':'DIFF'}, inplace=True)
+
     return data_torn
