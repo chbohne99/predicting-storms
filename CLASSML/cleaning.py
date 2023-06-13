@@ -26,7 +26,46 @@ def cleaning(df):
 
     data_torn = tornados[['STATE', 'BEGIN_DATE_TIME','END_DATE_TIME','TOR_F_SCALE',
                       'TOR_LENGTH', 'TOR_WIDTH','BEGIN_LAT', 'BEGIN_LON',
-                      'END_LAT', 'END_LON', 'DIFF']]
+                      'END_LAT', 'END_LON', 'DIFF', 'DAMAGE_PROPERTY', 'DAMAGE_CROPS',
+                      'INJURIES_DIRECT', 'INJURIES_INDIRECT',
+                        'DEATHS_DIRECT', 'DEATHS_INDIRECT']]
+
+    # transform the money to actual numbers
+    def transform_money(row):
+        if 'K' in str(row):
+            if row.strip('K') == '':
+                row = 1_000
+            else:
+                row = float(row.strip('K'))*1_000
+        elif 'M' in str(row):
+            if row.strip('M') == '':
+                row = 1_000_000
+            else:
+                row = float(row.strip('M'))*1_000_000
+        elif 'B' in str(row):
+            if row.strip('B') == '':
+                row = 1_000_000_000
+            else:
+                row = float(row.strip('B'))*1_000_000_000
+        elif 'T' in str(row):
+            if row.strip('T'):
+                row = 1_000_000_000_000
+            else:
+                row = float(row.strip('T'))*1_000_000_000_000
+        return float(row)
+
+
+    data_torn.DAMAGE_PROPERTY = data_torn.DAMAGE_PROPERTY.map(transform_money)
+    data_torn.DAMAGE_PROPERTY.fillna(0, inplace=True)
+    data_torn.DAMAGE_CROPS = data_torn.DAMAGE_CROPS.map(transform_money)
+    data_torn.DAMAGE_PROPERTY.fillna(0, inplace=True)
+    data_torn['DAMAGES'] = data_torn.DAMAGE_PROPERTY + data_torn.DAMAGE_CROPS
+
+
+    data_torn.drop(index = data_torn[data_torn.STATE.isin(['VIRGIN ISLANDS', 'ALASKA', 'DISTRICT OF COLUMBIA',
+                    'RHODE ISLAND','Kentucky' 'HAWAII', 'VERMONT', 'DELAWARE', 'NEW HAMPSHIRE', 'OREGON',
+                    'CONNECTICUT', 'WASHINGTON', 'UTAH', 'MAINE','WEST VIRGINIA', 'NEW JERSEY', 'MASSACHUSETTS'
+                    'PUERTO RICO', 'NEVADA'])].index, inplace=True)
 
     # azimuth direction -> angle relativeley to geographical North
     data_torn['DIR'] = np.arctan((data_torn.END_LON - data_torn.BEGIN_LON)/
@@ -34,6 +73,7 @@ def cleaning(df):
     # fill missing values with the mean traveling direction of the tornado
     data_torn.DIR.fillna(np.nanmean(data_torn.DIR), inplace=True)
     data_torn.reset_index(inplace=True)
+    data_torn.drop(columns = 'index', inplace=True)
 
     def haversine(lon1, lat1, lon2, lat2):
         """
@@ -71,14 +111,14 @@ def cleaning(df):
         return row
 
     data_torn['MONTH'] = data_torn.BEGIN_DATE_TIME.map(extract_m)
-    data_torn['Month_sin']=data_torn.MONTH.apply(lambda x:
-        np.sin(2*np.pi*data_torn.MONTH[x]/12))
-    data_torn['Month_cosin']=data_torn.MONTH.apply(lambda x:
-        np.cos(2*np.pi*data_torn.MONTH[x]/12))
-    data_torn.drop(columns = 'MONTH', inplace=True)
-
     data_torn['YEAR'] = data_torn.BEGIN_DATE_TIME.map(extract_y)
     data_torn['DAY'] = data_torn.BEGIN_DATE_TIME.map(extract_d)
+
+    data_torn.YEAR.replace([2050, 2051, 2052, 2053, 2054, 2055, 2056, 2057, 2058, 2059, 2060,
+       2061, 2062, 2063, 2064, 2065, 2066, 2067, 2068, 2069, 2070, 2071,
+       2072], [1950, 1951, 1952, 1953, 1954, 1955, 1956, 1957, 1958, 1959, 1960,
+       1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968, 1969, 1970, 1971,
+       1972], inplace=True)
 
     data_torn['AREA'] = data_torn.TOR_WIDTH * data_torn.TOR_LENGTH
 
