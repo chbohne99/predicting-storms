@@ -57,10 +57,12 @@ def predict_scale(
 def predict_frequency(year):
     year=int(year)
 
-    y_pred=app.state.model_linear.predict(year)
+    d = {'YEAR': [year]}
+    year_df = pd.DataFrame(d)
+    y_pred=app.state.model_linear.predict(year_df)
 
     return {
-        'frequency':y_pred
+        'frequency':round(y_pred[0])
     }
 
 
