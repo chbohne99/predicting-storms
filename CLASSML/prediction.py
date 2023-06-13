@@ -1,16 +1,10 @@
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import train_test_split
+from registry import load_model
+from preprocessing import preprocessing
 
-def prediction(df):
-    '''
-    Evaluate the model and compare it to baseline score
-    '''
+def prediction(X_pred):
 
-    baseline_score = df.encoded_f_scale.value_counts()[0]/len(df)
-    print(f'The Baseline Score amounts to {round(baseline_score,2)}!')
 
-    X = df.drop(columns = 'encoded_f_scale')
-    y = df['encoded_f_scale']
+    X_processed = preprocessing(X_pred)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3,
                                                         random_state=42)
