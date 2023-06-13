@@ -2,7 +2,7 @@ import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from CLASSML.preprocessing import preprocessing
+from CLASSML.fitting import fitting
 from CLASSML.registry import *
 import numpy as np
 import datetime
@@ -42,12 +42,15 @@ def predict_scale(
         state=[str(State).upper()],
         ))
 
-    X_processed = preprocessing(X_pred)
+    X_processed = fitting(X_pred)
 
     y_pred = app.state.model_scale.predict(X_processed)
+    dic = {0:'EF0', 1:'EF1', 2:'EF2', 3:'EF3', 4:'EF4', 5:'EF5'}
+
+    y_predict = dic[y_pred[0]]
 
     return {
-        'f_scale':y_pred
+        'f_scale':y_predict
     }
 
 @app.get("/predict_frequency")
