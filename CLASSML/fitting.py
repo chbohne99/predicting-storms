@@ -16,7 +16,6 @@ def fitting(df):
         return row
 
     df['MONTH'] = df.begin_date.map(extract_m)
-    df['YEAR'] = df.begin_date.map(extract_y)
     df['DAY'] = df.begin_date.map(extract_d)
 
     df.reset_index(inplace=True)
