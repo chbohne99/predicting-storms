@@ -34,7 +34,7 @@ def preprocessing(df):
 
     data_torn.drop(index = data_torn[data_torn.STATE.isin(['VIRGIN ISLANDS', 'ALASKA', 'DISTRICT OF COLUMBIA',
                     'RHODE ISLAND','Kentucky','HAWAII', 'VERMONT', 'DELAWARE', 'NEW HAMPSHIRE', 'OREGON',
-                    'CONNECTICUT', 'WASHINGTON', 'UTAH', 'MAINE','WEST VIRGINIA', 'NEW JERSEY', 'MASSACHUSETTS'
+                    'CONNECTICUT', 'WASHINGTON', 'UTAH', 'MAINE','WEST VIRGINIA', 'NEW JERSEY', 'MASSACHUSETTS',
                     'PUERTO RICO', 'NEVADA'])].index, inplace=True)
     data_torn.reset_index(inplace=True)
     data_torn.drop(columns = 'index', inplace=True)
