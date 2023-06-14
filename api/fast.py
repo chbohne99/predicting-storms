@@ -45,7 +45,7 @@ def predict_scale(
     X_processed = fitting(X_pred)
 
     y_pred = app.state.model_scale.predict(X_processed)
-    dic = {0:'EF0', 1:'EF1', 2:'EF2', 3:'EF3', 4:'EF4', 5:'EF5'}
+    dic = {0:'Light Damage (EF0)', 1:'Moderate Damage (EF1)', 2:'Considerable Damage (EF2-EF5)'}
 
     y_predict = dic[y_pred[0]]
 
