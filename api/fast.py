@@ -30,10 +30,8 @@ def predict_scale(
     ):      # 1
     """
     Make a single course prediction.
-    Assumes `pickup_datetime` is provided as a string by the user in "%Y-%m-%d %H:%M:%S" format
-    Assumes `pickup_datetime` implicitly refers to the "US/Eastern" timezone (as any user in New York City would naturally write)
     """
-    date = pd.Timestamp(datetime.strptime(Date,"%Y-%m-%d"), tz='UTC')
+    date = pd.Timestamp(datetime.datetime.strptime(Date,"%Y-%m-%d"), tz='UTC')
     X_pred = pd.DataFrame(dict(
         begin_date=[date],
         tornado_length=[float(Tornado_length)],
