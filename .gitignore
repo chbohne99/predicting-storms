@@ -10,3 +10,5 @@ streamlit2.py
 old_py_files/
 .ipynb_checkpoints/
 gcpkey.json
+.env
+.envrc
