@@ -1,5 +1,5 @@
-from registry import load_model
-from preprocessing import preprocessing
+from registry import *
+from fitting import fitting
 import pandas as pd
 
 def prediction(X_pred=None):
@@ -13,9 +13,8 @@ def prediction(X_pred=None):
             state=['TEXAS'],
             ))
 
-    X_processed = preprocessing(X_pred)
+    X_processed = fitting(X_pred)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3,
-                                                        random_state=42)
-    y_pred = []
+    model=load_model_scale()
+    y_pred = model.predict(X_processed)
     return y_pred
