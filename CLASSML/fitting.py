@@ -17,6 +17,7 @@ def fitting(df):
 
     df['MONTH'] = df.begin_date.map(extract_m)
     df['DAY'] = df.begin_date.map(extract_d)
+    df['YEAR'] = df.begin_date.map(extract_y)
 
     df.reset_index(inplace=True)
     df.drop(columns = 'index', inplace=True)
@@ -46,7 +47,7 @@ def fitting(df):
      'WISCONSIN','WYOMING']
 
     d = pd.DataFrame(0, index=[0], columns=feature_list)
-    d['state'] = 1
+    d.loc[0, df.iloc[0].state] = 1
 
     data_torn = pd.concat([df,d], axis = 1)
     data_torn.drop(columns = ["state"], inplace = True)
@@ -54,20 +55,20 @@ def fitting(df):
 
     # Step 0 - Instanciate MINMAX Scaler
 
-    mm_scaler = MinMaxScaler()
+    #mm_scaler = MinMaxScaler()
 
     # Step 1- Fit the scaler to the `GrLiveArea`
     # to "learn" the median value and the IQR
 
-    mm_scaler.fit(data_torn[['tornado_length','tornado_width','duration','AREA']])
+    #mm_scaler.fit(data_torn[['tornado_length','tornado_width','duration','AREA']])
 
     # 2-Scale/Transform
     # <-> apply the transformation (value - median) / IQR for every house
 
-    data_torn[['tornado_length','tornado_width','duration','AREA']]\
-                           = mm_scaler.transform(data_torn[['tornado_length',
-                                                            'tornado_width',
-                                                            'duration','AREA']])
+    #data_torn[['tornado_length','tornado_width','duration','AREA']]\
+    #                       = mm_scaler.transform(data_torn[['tornado_length',
+    # #                                                       'tornado_width',
+    #                                                        'duration','AREA']])
     data_torn.rename(columns = {'tornado_length':'TOR_LENGTH', 'tornado_width':'TOR_WIDTH',
                          'duration':'DIFF'}, inplace=True)
 
