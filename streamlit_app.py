@@ -286,44 +286,45 @@ merg = pd.read_csv(r'raw_data/past_frequency.csv')
 #chart_data = pd.DataFrame({'Year': X, 'Frequency': y})
 #st.line_chart(chart_data)
 
-
-# Set up Google Cloud Storage client
-storage_client = storage.Client()
-
-# Define the path to your model file in predictingthe Google Cloud bucket
-bucket_name = 'your-bucket-name'
-model_file_path = 'your-model-file-path'
-
-# Download the model file from the bucket
-bucket = storage_client.get_bucket(bucket_name)
-blob = bucket.blob(model_file_path)
-model_blob = blob.download_as_text()
-
-# Load the model from the downloaded file
-model = pickle.loads(model_blob)
-
-# Assuming you have X and y as your existing data
-X = merg['YEAR']
-y = merg['BEGIN_DATE_TIME']
-
-# Calculate the trendline using the coefficients from the model
-k = model.coef_[0]  # Slope coefficient
-m = model.intercept_  # Intercept
-trendline = k * X + m
-
-# Plot existing data as scatter plot
-fig, ax = plt.subplots()
-ax.scatter(X, y, label='Existing Data')
-ax.plot(X, trendline, color='red', label='Trendline')
-ax.set_xlabel('Year')
-ax.set_ylabel('Frequency')
-
-# Add the new value to the plot as a red dot
-ax.scatter(X[-1:], frequency, color='red', label='New Value')
-
-# Display the plot in Streamlit
-st.pyplot(fig)
-
-# Alternatively, you can use Streamlit's line_chart to plot the existing data and trendline
-chart_data = pd.DataFrame({'Year': X, 'Frequency': y, 'Trendline': trendline})
-st.line_chart(chart_data)
+#########LOADING MODEL ################################
+## Set up Google Cloud Storage client
+#storage_client = storage.Client()
+#
+## Define the path to your model file in predictingthe Google Cloud bucket
+#bucket_name = 'your-bucket-name'
+#model_file_path = 'your-model-file-path'
+#
+## Download the model file from the bucket
+#bucket = storage_client.get_bucket(bucket_name)
+#blob = bucket.blob(model_file_path)
+#model_blob = blob.download_as_text()
+#
+## Load the model from the downloaded file
+#model = pickle.loads(model_blob)
+#
+## Assuming you have X and y as your existing data
+#X = merg['YEAR']
+#y = merg['BEGIN_DATE_TIME']
+#
+## Calculate the trendline using the coefficients from the model
+#k = model.coef_[0]  # Slope coefficient
+#m = model.intercept_  # Intercept
+#trendline = k * X + m
+#
+## Plot existing data as scatter plot
+#fig, ax = plt.subplots()
+#ax.scatter(X, y, label='Existing Data')
+#ax.plot(X, trendline, color='red', label='Trendline')
+#ax.set_xlabel('Year')
+#ax.set_ylabel('Frequency')
+#
+## Add the new value to the plot as a red dot
+#ax.scatter(X[-1:], frequency, color='red', label='New Value')
+#
+## Display the plot in Streamlit
+#st.pyplot(fig)
+#
+## Alternatively, you can use Streamlit's line_chart to plot the existing data and trendline
+#chart_data = pd.DataFrame({'Year': X, 'Frequency': y, 'Trendline': trendline})
+#st.line_chart(chart_data)
+#
